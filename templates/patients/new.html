@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Register Patient{% endblock %}
+{% block page_title %}Register New Patient{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <a href="{{ url_for('patient.index') }}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h5 class="fw-700 mb-0">Register New Patient</h5>
+                <p class="text-muted mb-0" style="font-size:0.82rem">
+                    Fill in patient details below
+                </p>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('patient.new') }}">
+            <!-- Personal Information -->
+            <div class="table-card mb-4">
+                <h6 class="fw-700 mb-4 pb-2 border-bottom">
+                    <i class="bi bi-person me-2 text-primary"></i>
+                    Personal Information
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               name="full_name"
+                               class="form-control"
+                               placeholder="Enter full name"
+                               required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-600">
+                            Date of Birth <span class="text-danger">*</span>
+                        </label>
+                        <input type="date"
+                               name="date_of_birth"
+                               class="form-control"
+                               required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-600">
+                            Gender <span class="text-danger">*</span>
+                        </label>
+                        <select name="gender" class="form-select" required>
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-600">Blood Type</label>
+                        <select name="blood_type" class="form-select">
+                            <option value="">Unknown</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-600">Nationality</label>
+                        <input type="text"
+                               name="nationality"
+                               class="form-control"
+                               placeholder="e.g. Egyptian">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-600">National ID</label>
+                        <input type="text"
+                               name="national_id"
+                               class="form-control"
+                               placeholder="National ID number">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="table-card mb-4">
+                <h6 class="fw-700 mb-4 pb-2 border-bottom">
+                    <i class="bi bi-telephone me-2 text-success"></i>
+                    Contact Information
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-600">Phone</label>
+                        <input type="tel"
+                               name="phone"
+                               class="form-control"
+                               placeholder="+20 123 456 7890">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-600">Email</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="patient@email.com">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-600">Address</label>
+                        <textarea name="address"
+                                  class="form-control"
+                                  rows="2"
+                                  placeholder="Full address"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact -->
+            <div class="table-card mb-4">
+                <h6 class="fw-700 mb-4 pb-2 border-bottom">
+                    <i class="bi bi-telephone-plus me-2 text-danger"></i>
+                    Emergency Contact
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-600">Contact Name</label>
+                        <input type="text"
+                               name="emergency_contact_name"
+                               class="form-control"
+                               placeholder="Full name">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-600">Contact Phone</label>
+                        <input type="tel"
+                               name="emergency_contact_phone"
+                               class="form-control"
+                               placeholder="+20 123 456 7890">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-600">Relation</label>
+                        <select name="emergency_contact_relation"
+                                class="form-select">
+                            <option value="">Select...</option>
+                            <option value="spouse">Spouse</option>
+                            <option value="parent">Parent</option>
+                            <option value="child">Child</option>
+                            <option value="sibling">Sibling</option>
+                            <option value="friend">Friend</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Information -->
+            <div class="table-card mb-4">
+                <h6 class="fw-700 mb-4 pb-2 border-bottom">
+                    <i class="bi bi-heart-pulse me-2 text-danger"></i>
+                    Medical Information
+                </h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            Known Allergies
+                        </label>
+                        <textarea name="allergies"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="List any known allergies...">
+                        </textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            Chronic Diseases
+                        </label>
+                        <textarea name="chronic_diseases"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="List any chronic conditions...">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-person-check me-2"></i>
+                    Register Patient
+                </button>
+                <a href="{{ url_for('patient.index') }}"
+                   class="btn btn-outline-secondary btn-lg px-4">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

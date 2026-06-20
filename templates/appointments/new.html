@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}New Appointment{% endblock %}
+{% block page_title %}Schedule Appointment{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <a href="{{ url_for('appointment.index') }}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            <div>
+                <h5 class="fw-700 mb-0">Schedule New Appointment</h5>
+                <p class="text-muted mb-0" style="font-size:0.82rem">
+                    Fill in appointment details below
+                </p>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('appointment.new') }}">
+            <div class="table-card">
+
+                <div class="row g-3">
+
+                    <!-- Patient -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-person me-1 text-primary"></i>
+                            Patient <span class="text-danger">*</span>
+                        </label>
+                        <select name="patient_id"
+                                class="form-select"
+                                required>
+                            <option value="">Select Patient...</option>
+                            {% for p in patients %}
+                            <option value="{{ p.id }}">
+                                {{ p.full_name }} — {{ p.mrn }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Doctor -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-person-badge me-1 text-success"></i>
+                            Doctor <span class="text-danger">*</span>
+                        </label>
+                        <select name="doctor_id"
+                                class="form-select"
+                                required>
+                            <option value="">Select Doctor...</option>
+                            {% for d in doctors %}
+                            <option value="{{ d.id }}">
+                                Dr. {{ d.full_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-calendar3 me-1 text-primary"></i>
+                            Date & Time <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local"
+                               name="scheduled_at"
+                               class="form-control"
+                               required>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-clock me-1 text-warning"></i>
+                            Duration
+                        </label>
+                        <select name="duration" class="form-select">
+                            <option value="15">15 minutes</option>
+                            <option value="30" selected>30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">60 minutes</option>
+                            <option value="90">90 minutes</option>
+                        </select>
+                    </div>
+
+                    <!-- Appointment Type -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-tag me-1 text-info"></i>
+                            Appointment Type
+                        </label>
+                        <select name="appointment_type" class="form-select">
+                            <option value="">Select Type...</option>
+                            <option value="consultation">Consultation</option>
+                            <option value="follow-up">Follow-up</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="routine">Routine Check</option>
+                            <option value="procedure">Procedure</option>
+                            <option value="online">Online</option>
+                        </select>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-chat-text me-1 text-secondary"></i>
+                            Reason for Visit
+                        </label>
+                        <input type="text"
+                               name="reason"
+                               class="form-control"
+                               placeholder="Brief reason for visit">
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="col-12">
+                        <label class="form-label fw-600">
+                            <i class="bi bi-sticky me-1 text-warning"></i>
+                            Additional Notes
+                        </label>
+                        <textarea name="notes"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Any additional notes...">
+                        </textarea>
+                    </div>
+
+                </div>
+
+                <!-- Info Box -->
+                <div class="alert alert-info mt-4 mb-0"
+                     style="font-size:0.82rem">
+                    <i class="bi bi-info-circle me-2"></i>
+                    The system will automatically check for scheduling
+                    conflicts before confirming the appointment.
+                </div>
+
+            </div>
+
+            <!-- Submit -->
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit"
+                        class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Schedule Appointment
+                </button>
+                <a href="{{ url_for('appointment.index') }}"
+                   class="btn btn-outline-secondary btn-lg px-4">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

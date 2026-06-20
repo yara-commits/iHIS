@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}iHIS{% endblock %} - Intelligent Health Information System</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary: #0d6efd;
+            --sidebar-bg: #1a2236;
+            --sidebar-text: #a8b4cc;
+            --sidebar-active: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-brand h4 {
+            color: #fff;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .sidebar-brand span { color: #0d6efd; }
+
+        .sidebar-menu { padding: 16px 0; }
+
+        .menu-label {
+            padding: 8px 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.3);
+            font-weight: 600;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            color: var(--sidebar-active);
+            background: rgba(255,255,255,0.08);
+            border-left-color: #0d6efd;
+        }
+
+        .sidebar-link i { font-size: 1.1rem; width: 20px; }
+
+        /* Main content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: #fff;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .content-area { padding: 24px; }
+
+        /* Cards */
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .stat-card .stat-icon {
+            width: 48px; height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a2236;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.82rem;
+            color: #6b7280;
+        }
+
+        /* Tables */
+        .table-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        /* Badges */
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d1e7dd; color: #0a3622; }
+        .status-completed { background: #cfe2ff; color: #084298; }
+        .status-cancelled { background: #f8d7da; color: #842029; }
+
+        /* Dark mode */
+        [data-bs-theme="dark"] body { background: #0f1117; }
+        [data-bs-theme="dark"] .topbar { background: #1a2236; border-color: #2d3748; }
+        [data-bs-theme="dark"] .stat-card,
+        [data-bs-theme="dark"] .table-card { background: #1a2236; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h4>i<span>HIS</span></h4>
+        <small style="color:rgba(255,255,255,0.4);font-size:0.72rem;">
+            Intelligent Health System
+        </small>
+    </div>
+
+    <div class="sidebar-menu">
+        <!-- Common -->
+        <div class="menu-label">Main</div>
+        <a href="{{ url_for('auth.dashboard') }}" class="sidebar-link">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <!-- Patient Management -->
+        {% if current_user.role.name in ['admin','superadmin','doctor','nurse','receptionist'] %}
+        <div class="menu-label">Patients</div>
+        <a href="{{ url_for('patient.index') }}" class="sidebar-link">
+            <i class="bi bi-people"></i> All Patients
+        </a>
+        <a href="{{ url_for('patient.new') }}" class="sidebar-link">
+            <i class="bi bi-person-plus"></i> Register Patient
+        </a>
+        <a href="{{ url_for('patient.search') }}" class="sidebar-link">
+            <i class="bi bi-search"></i> Search Patient
+        </a>
+        {% endif %}
+
+        <!-- Doctor -->
+        {% if current_user.role.name in ['doctor','admin','superadmin'] %}
+        <div class="menu-label">Clinical</div>
+        <a href="{{ url_for('doctor.index') }}" class="sidebar-link">
+            <i class="bi bi-clipboard2-pulse"></i> Doctor Dashboard
+        </a>
+        {% endif %}
+
+        <!-- Appointments -->
+        <div class="menu-label">Appointments</div>
+        <a href="{{ url_for('appointment.index') }}" class="sidebar-link">
+            <i class="bi bi-calendar3"></i> Appointments
+        </a>
+        <a href="{{ url_for('appointment.new') }}" class="sidebar-link">
+            <i class="bi bi-calendar-plus"></i> New Appointment
+        </a>
+
+        <!-- Laboratory -->
+        {% if current_user.role.name in ['lab_tech','doctor','admin','superadmin'] %}
+        <div class="menu-label">Laboratory</div>
+        <a href="{{ url_for('laboratory.index') }}" class="sidebar-link">
+            <i class="bi bi-eyedropper"></i> Lab Dashboard
+        </a>
+        <a href="{{ url_for('laboratory.orders') }}" class="sidebar-link">
+            <i class="bi bi-file-medical"></i> Lab Orders
+        </a>
+        {% endif %}
+
+        <!-- Radiology -->
+        {% if current_user.role.name in ['radiologist','doctor','admin','superadmin'] %}
+        <div class="menu-label">Radiology</div>
+        <a href="{{ url_for('radiology.index') }}" class="sidebar-link">
+            <i class="bi bi-camera"></i> Radiology Dashboard
+        </a>
+        {% endif %}
+
+        <!-- Pharmacy -->
+        {% if current_user.role.name in ['pharmacist','admin','superadmin'] %}
+        <div class="menu-label">Pharmacy</div>
+        <a href="{{ url_for('pharmacy.index') }}" class="sidebar-link">
+            <i class="bi bi-capsule"></i> Pharmacy Dashboard
+        </a>
+        <a href="{{ url_for('pharmacy.inventory') }}" class="sidebar-link">
+            <i class="bi bi-box-seam"></i> Inventory
+        </a>
+        {% endif %}
+
+        <!-- Dental -->
+        {% if current_user.role.name in ['dentist','admin','superadmin'] %}
+        <div class="menu-label">Dental</div>
+        <a href="{{ url_for('dental.index') }}" class="sidebar-link">
+            <i class="bi bi-hospital"></i> Dental Dashboard
+        </a>
+        {% endif %}
+
+        <!-- Rehabilitation -->
+        {% if current_user.role.name in ['therapist','admin','superadmin'] %}
+        <div class="menu-label">Rehabilitation</div>
+        <a href="{{ url_for('rehabilitation.index') }}" class="sidebar-link">
+            <i class="bi bi-heart-pulse"></i> Rehab Dashboard
+        </a>
+        <a href="{{ url_for('rehabilitation.exercises') }}" class="sidebar-link">
+            <i class="bi bi-activity"></i> Exercise Library
+        </a>
+        {% endif %}
+
+        <!-- Admin -->
+        {% if current_user.role.name in ['admin','superadmin'] %}
+        <div class="menu-label">Administration</div>
+        <a href="{{ url_for('admin.index') }}" class="sidebar-link">
+            <i class="bi bi-gear"></i> Admin Dashboard
+        </a>
+        <a href="{{ url_for('admin.staff') }}" class="sidebar-link">
+            <i class="bi bi-person-badge"></i> Staff Management
+        </a>
+        <a href="{{ url_for('admin.departments') }}" class="sidebar-link">
+            <i class="bi bi-building"></i> Departments
+        </a>
+        {% endif %}
+
+        <!-- Super Admin -->
+        {% if current_user.role.name == 'superadmin' %}
+        <div class="menu-label">Super Admin</div>
+        <a href="{{ url_for('superadmin.index') }}" class="sidebar-link">
+            <i class="bi bi-shield-lock"></i> Super Admin
+        </a>
+        <a href="{{ url_for('superadmin.users') }}" class="sidebar-link">
+            <i class="bi bi-people-fill"></i> All Users
+        </a>
+        <a href="{{ url_for('superadmin.audit_logs') }}" class="sidebar-link">
+            <i class="bi bi-journal-text"></i> Audit Logs
+        </a>
+        <a href="{{ url_for('superadmin.settings') }}" class="sidebar-link">
+            <i class="bi bi-sliders"></i> System Settings
+        </a>
+        {% endif %}
+
+        <!-- Profile -->
+        <div class="menu-label">Account</div>
+        <a href="{{ url_for('auth.profile') }}" class="sidebar-link">
+            <i class="bi bi-person-circle"></i> My Profile
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="sidebar-link">
+            <i class="bi bi-box-arrow-left"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-sm btn-outline-secondary d-md-none"
+                    onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <h6 class="mb-0 fw-600">
+                {% block page_title %}Dashboard{% endblock %}
+            </h6>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <!-- Dark mode toggle -->
+            <button class="btn btn-sm btn-outline-secondary"
+                    onclick="toggleDarkMode()">
+                <i class="bi bi-moon-fill"></i>
+            </button>
+            <!-- User info -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary text-white d-flex
+                            align-items-center justify-content-center"
+                     style="width:34px;height:34px;font-size:0.85rem">
+                    {{ current_user.full_name[0] if current_user.full_name else 'U' }}
+                </div>
+                <div>
+                    <div style="font-size:0.82rem;font-weight:600">
+                        {{ current_user.full_name }}
+                    </div>
+                    <div style="font-size:0.72rem;color:#6b7280">
+                        {{ current_user.role.name | title }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="px-4 pt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="bi bi-info-circle me-2"></i>{{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Page Content -->
+    <div class="content-area">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+{% else %}
+<!-- Not logged in -->
+{% block auth_content %}{% endblock %}
+{% endif %}
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+    }
+
+    function toggleDarkMode() {
+        const html = document.documentElement;
+        html.setAttribute('data-bs-theme',
+            html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark');
+    }
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

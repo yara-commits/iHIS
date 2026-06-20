@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block auth_content %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center"
+     style="background: linear-gradient(135deg, #1a2236 0%, #0d6efd 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+
+                <!-- Logo -->
+                <div class="text-center mb-4">
+                    <h1 class="fw-800 text-white" style="font-size:2.5rem">
+                        i<span style="color:#60a5fa">HIS</span>
+                    </h1>
+                    <p class="text-white-50">
+                        Intelligent Health Information System
+                    </p>
+                </div>
+
+                <!-- Login Card -->
+                <div class="card border-0 shadow-lg" style="border-radius:16px">
+                    <div class="card-body p-4">
+                        <h4 class="fw-700 mb-1">Welcome Back</h4>
+                        <p class="text-muted mb-4" style="font-size:0.88rem">
+                            Sign in to your account
+                        </p>
+
+                        <form method="POST" action="{{ url_for('auth.login') }}">
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label fw-600">
+                                    <i class="bi bi-envelope me-1"></i>Email
+                                </label>
+                                <input type="email"
+                                       name="email"
+                                       class="form-control form-control-lg"
+                                       placeholder="your@email.com"
+                                       required
+                                       autofocus>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label class="form-label fw-600">
+                                    <i class="bi bi-lock me-1"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <input type="password"
+                                           name="password"
+                                           id="passwordInput"
+                                           class="form-control form-control-lg"
+                                           placeholder="••••••••"
+                                           required>
+                                    <button class="btn btn-outline-secondary"
+                                            type="button"
+                                            onclick="togglePassword()">
+                                        <i class="bi bi-eye" id="eyeIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Remember Me -->
+                            <div class="mb-4 d-flex align-items-center
+                                        justify-content-between">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="remember"
+                                           id="remember">
+                                    <label class="form-check-label text-muted"
+                                           for="remember">
+                                        Remember me
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg w-100 fw-600">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Sign In
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Default credentials hint -->
+                <div class="card border-0 mt-3"
+                     style="border-radius:12px;
+                            background:rgba(255,255,255,0.1)">
+                    <div class="card-body p-3">
+                        <p class="text-white mb-2"
+                           style="font-size:0.8rem;font-weight:600">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Default Credentials:
+                        </p>
+                        <div class="d-flex flex-column gap-1">
+                            <small class="text-white-50">
+                                🛡 Super Admin: superadmin@ihis.com / admin123
+                            </small>
+                            <small class="text-white-50">
+                                👨‍⚕️ Doctor: doctor@ihis.com / admin123
+                            </small>
+                            <small class="text-white-50">
+                                🔬 Lab Tech: lab@ihis.com / admin123
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-white-50 mt-3"
+                   style="font-size:0.78rem">
+                    &copy; 2024 iHIS — Intelligent Health Information System
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const input = document.getElementById('passwordInput');
+    const icon = document.getElementById('eyeIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+    }
+}
+</script>
+{% endblock %}
