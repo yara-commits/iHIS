@@ -1,1 +1,3 @@
-# ihis-project
+
+# iHIS
+Intelligent Health Information System
